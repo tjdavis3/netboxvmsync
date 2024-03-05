@@ -9,6 +9,8 @@ import (
 	"github.com/ringsq/vcenterapi/pkg/vcenter"
 )
 
+const VM_STATUS_ON = "POWERED_ON"
+
 type VmwareProvider struct {
 	vcenter *vcenter.Vcenter
 	log     pkg.Logger
@@ -85,6 +87,11 @@ func (v *VmwareProvider) GetClusterVMs(clusterID string) ([]sync.VM, error) {
 		vmDetail.ID = listVM.ID
 		vmDetail.Name = listVM.Name
 		vmDetail.Memory = listVM.MemorySizeMiB
+		if listVM.PowerState == VM_STATUS_ON {
+			vmDetail.Status = "active"
+		} else {
+			vmDetail.Status = "offline"
+		}
 		for _, disk := range vm.Disks {
 			vmDetail.Diskspace = vmDetail.Diskspace + disk.Capacity
 		}

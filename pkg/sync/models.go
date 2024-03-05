@@ -21,6 +21,7 @@ type VM struct {
 	Memory      int
 	Diskspace   int
 	Network     []NIC
+	Status      string
 }
 
 type NIC struct {

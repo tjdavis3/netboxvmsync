@@ -79,6 +79,7 @@ func (s *Sync) AddVMtoCluster(clusterID int, vm VM) error {
 	newvm.ClusterID = clusterID
 	newvm.Diskspace = vm.Diskspace
 	newvm.Memory = vm.Memory
+	newvm.Status = vm.Status
 
 	nbVm, err := s.netbox.AddVM(*newvm)
 	if err != nil {
