@@ -24,10 +24,11 @@ type VM struct {
 }
 
 type NIC struct {
-	ID   string
-	Name string
-	MAC  string
-	IP   string
+	ID          string
+	Name        string
+	MAC         string
+	IP          string
+	Description string
 }
 
 type VMProvider interface {

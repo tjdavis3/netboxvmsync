@@ -1,6 +1,7 @@
 package vmware
 
 import (
+	"fmt"
 	"log/slog"
 
 	"github.com/ringsq/netboxvmsync/pkg"
@@ -96,6 +97,7 @@ func (v *VmwareProvider) GetClusterVMs(clusterID string) ([]sync.VM, error) {
 			adapter.ID = nicID
 			adapter.MAC = nic.MacAddress
 			adapter.Name = nic.Label
+			adapter.Description = fmt.Sprintf("%s %s to %s/%s", nic.Type, nic.State, nic.Backing.Type, nic.Backing.Network)
 			vmDetail.Network = append(vmDetail.Network, adapter)
 		}
 		vms = append(vms, vmDetail)

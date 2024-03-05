@@ -60,23 +60,8 @@ func (s *Sync) StartSync() {
 				var nbVm netbox.DeviceOrVM
 				nbVms, err := s.netbox.SearchVMs(fmt.Sprintf("cf_vmid=%s", vm.ID))
 				if (err != nil && errors.Is(err, netbox.ErrNotFound)) || len(nbVms) == 0 {
-					s.log.Info("adding new VM", "cluster", cluster.Name, "VM", vm.Name)
-					newvm := &netbox.NewVM{}
-					newvm.Name = vm.Name
-					newvm.ClusterID = nbCluster.ID
-					newvm.Diskspace = vm.Diskspace
-					newvm.Memory = vm.Memory
-
-					nbVm, err = s.netbox.AddVM(*newvm)
-					if err != nil {
-						s.log.Error("failed to add vm", "VM", vm.Name)
-					}
-					payload := make(map[string]interface{})
-					cf := make(map[string]interface{})
-					cf["vmid"] = vm.ID
-					payload["custom_fields"] = cf
-					if err = s.netbox.UpdateObjectByURL(nbVm.URL, payload); err != nil {
-						s.log.Error("could not set vmID on vm", "vm", vm.Name, "error", err)
+					if err = s.AddVMtoCluster(nbCluster.ID, vm); err != nil {
+						s.log.Error("error adding VM", "error", err)
 					}
 				}
 				// Update VM if changed
@@ -84,6 +69,46 @@ func (s *Sync) StartSync() {
 			}
 		}
 	}
+}
+
+// AddVMtoCluster creates a new VM under the given cluster ID
+func (s *Sync) AddVMtoCluster(clusterID int, vm VM) error {
+	s.log.Info("adding new VM", "cluster", clusterID, "VM", vm.Name)
+	newvm := &netbox.NewVM{}
+	newvm.Name = vm.Name
+	newvm.ClusterID = clusterID
+	newvm.Diskspace = vm.Diskspace
+	newvm.Memory = vm.Memory
+
+	nbVm, err := s.netbox.AddVM(*newvm)
+	if err != nil {
+		s.log.Error("failed to add vm", "VM", vm.Name)
+		return err
+	}
+
+	// Add the vm id to the vmid custom field value
+	payload := make(map[string]interface{})
+	cf := make(map[string]interface{})
+	cf["vmid"] = vm.ID
+	payload["custom_fields"] = cf
+	if err = s.netbox.UpdateObjectByURL(nbVm.URL, payload); err != nil {
+		s.log.Error("could not set vmID on vm", "vm", vm.Name, "error", err)
+	}
+
+	// Add the interfaces
+	for _, nic := range vm.Network {
+		intf := netbox.InterfaceEdit{
+			Name:        &nic.Name,
+			MacAddress:  &nic.MAC,
+			VM:          &nbVm.ID,
+			Description: nic.Description,
+		}
+		if err = s.netbox.AddInterface("virtualmachine", int64(nbVm.ID), intf); err != nil {
+			s.log.Error("could not add interface", "vm", vm.Name, "nic", nic.Name, "error", err)
+		}
+	}
+
+	return nil
 }
 
 // VerifyCustomFields ensures required fields exist in Netbox
