@@ -1,4 +1,4 @@
-module github.com/ringsq/netboxvcenter
+module github.com/ringsq/netboxvmsync
 
 go 1.21.6
 

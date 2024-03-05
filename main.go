@@ -4,8 +4,8 @@ import (
 	"log"
 	"log/slog"
 
-	"github.com/ringsq/netboxvcenter/pkg/providers/vmware"
-	"github.com/ringsq/netboxvcenter/pkg/sync"
+	"github.com/ringsq/netboxvmsync/pkg/providers/vmware"
+	"github.com/ringsq/netboxvmsync/pkg/sync"
 	"github.com/rsapc/netbox"
 )
 

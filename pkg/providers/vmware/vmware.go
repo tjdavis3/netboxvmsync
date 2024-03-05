@@ -3,7 +3,7 @@ package vmware
 import (
 	"log/slog"
 
-	"github.com/ringsq/netboxvcenter/pkg/sync"
+	"github.com/ringsq/netboxvmsync/pkg/sync"
 	"github.com/ringsq/vcenterapi/pkg/vcenter"
 	"github.com/rsapc/hookcmd/models"
 )
