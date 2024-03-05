@@ -13,8 +13,6 @@ type VmwareProvider struct {
 	log     models.Logger
 }
 
-// TODO: Clean up logging to be more informative
-
 // NewVmwareProvider creates a new VM sync provider using vmware vcenter
 func NewVmwareProvider(baseURL string, username string, password string, logger models.Logger) (*VmwareProvider, error) {
 	vmw := &VmwareProvider{log: logger}

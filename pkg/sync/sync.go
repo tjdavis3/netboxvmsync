@@ -26,8 +26,6 @@ func NewSyncService(netbox *netbox.Client, provider VMProvider, logger models.Lo
 	return sync
 }
 
-//TODO: Add the ability to iterate through Netbox and decommision VMs that no longer appear in vmware
-
 func (s *Sync) StartSync() {
 	if err := s.VerifyCustomFields(); err != nil {
 		s.log.Error("could not verify or create custom fields", "error", err)
@@ -60,7 +58,6 @@ func (s *Sync) StartSync() {
 			}
 			for _, vm := range vms {
 				var nbVm netbox.DeviceOrVM
-				// TODO: Search for the VM by name if it doesn't exist by vmid
 				nbVms, err := s.netbox.SearchVMs(fmt.Sprintf("cf_vmid=%s", vm.ID))
 				if (err != nil && errors.Is(err, netbox.ErrNotFound)) || len(nbVms) == 0 {
 					s.log.Info("adding new VM", "cluster", cluster.Name, "VM", vm.Name)
@@ -70,8 +67,6 @@ func (s *Sync) StartSync() {
 					newvm.Diskspace = vm.Diskspace
 					newvm.Memory = vm.Memory
 
-					// TODO: Set VM status based on power / status in the provider
-					// TODO: Add network interfaces and IP to Netbox
 					nbVm, err = s.netbox.AddVM(*newvm)
 					if err != nil {
 						s.log.Error("failed to add vm", "VM", vm.Name)
@@ -84,7 +79,7 @@ func (s *Sync) StartSync() {
 						s.log.Error("could not set vmID on vm", "vm", vm.Name, "error", err)
 					}
 				}
-				// TODO: Update VM if changed
+				// Update VM if changed
 				_ = nbVm
 			}
 		}
