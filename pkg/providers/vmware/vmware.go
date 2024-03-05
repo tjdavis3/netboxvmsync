@@ -3,18 +3,18 @@ package vmware
 import (
 	"log/slog"
 
+	"github.com/ringsq/netboxvmsync/pkg"
 	"github.com/ringsq/netboxvmsync/pkg/sync"
 	"github.com/ringsq/vcenterapi/pkg/vcenter"
-	"github.com/rsapc/hookcmd/models"
 )
 
 type VmwareProvider struct {
 	vcenter *vcenter.Vcenter
-	log     models.Logger
+	log     pkg.Logger
 }
 
 // NewVmwareProvider creates a new VM sync provider using vmware vcenter
-func NewVmwareProvider(baseURL string, username string, password string, logger models.Logger) (*VmwareProvider, error) {
+func NewVmwareProvider(baseURL string, username string, password string, logger pkg.Logger) (*VmwareProvider, error) {
 	vmw := &VmwareProvider{log: logger}
 	if log, ok := logger.(*slog.Logger); ok {
 		vmw.log = log.With("provider", vmw.GetName())

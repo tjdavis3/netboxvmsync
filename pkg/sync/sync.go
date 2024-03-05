@@ -7,17 +7,17 @@ import (
 	"log/slog"
 	"os"
 
-	"github.com/rsapc/hookcmd/models"
+	"github.com/ringsq/netboxvmsync/pkg"
 	"github.com/rsapc/netbox"
 )
 
 type Sync struct {
 	netbox     *netbox.Client
 	vmProvider VMProvider
-	log        models.Logger
+	log        pkg.Logger
 }
 
-func NewSyncService(netbox *netbox.Client, provider VMProvider, logger models.Logger) *Sync {
+func NewSyncService(netbox *netbox.Client, provider VMProvider, logger pkg.Logger) *Sync {
 	sync := &Sync{netbox: netbox, vmProvider: provider, log: logger}
 	if log, ok := logger.(*slog.Logger); ok {
 		sync.log = log.With("service", "netboxvcenter sync")
