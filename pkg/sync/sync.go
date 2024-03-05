@@ -26,7 +26,6 @@ func NewSyncService(netbox *netbox.Client, provider VMProvider, logger models.Lo
 	return sync
 }
 
-//TODO: Check for vmid custom field and add if it doesn't exist
 //TODO: Add the ability to iterate through Netbox and decommision VMs that no longer appear in vmware
 
 func (s *Sync) StartSync() {
@@ -73,7 +72,6 @@ func (s *Sync) StartSync() {
 
 					// TODO: Set VM status based on power / status in the provider
 					// TODO: Add network interfaces and IP to Netbox
-					// TODO: Set the cf_vmid
 					nbVm, err = s.netbox.AddVM(*newvm)
 					if err != nil {
 						s.log.Error("failed to add vm", "VM", vm.Name)

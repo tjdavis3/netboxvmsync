@@ -36,6 +36,8 @@ github.com/rsapc/netbox v0.0.0-20240305161433-31f9f3e128bd h1:3euSaupqMFnvu0bOi9
 github.com/rsapc/netbox v0.0.0-20240305161433-31f9f3e128bd/go.mod h1:CdtnwIjXwF83qyFB516OKL4EAalFOaiWdbEvbVA4gsM=
 github.com/rsapc/netbox v0.0.0-20240305161713-4fa7a06c0387 h1:5HbE7S3P/pmmxOPamFWUYXFwBEaNjh0JY0M8SkzfWJI=
 github.com/rsapc/netbox v0.0.0-20240305161713-4fa7a06c0387/go.mod h1:CdtnwIjXwF83qyFB516OKL4EAalFOaiWdbEvbVA4gsM=
+github.com/rsapc/netbox v0.0.0-20240305171311-1f4bd6a240ad h1:1z7rmhq6tmagR8VEeUzs00zKDzODZQ6byoXf5qP2t3k=
+github.com/rsapc/netbox v0.0.0-20240305171311-1f4bd6a240ad/go.mod h1:CdtnwIjXwF83qyFB516OKL4EAalFOaiWdbEvbVA4gsM=
 github.com/yuin/goldmark v1.4.13/go.mod h1:6yULJ656Px+3vBD8DxQVa3kxgyrAnzto9xy5taEt/CY=
 golang.org/x/crypto v0.0.0-20190308221718-c2843e01d9a2/go.mod h1:djNgcEr1/C05ACkg1iLfiJU5Ep61QUkGW8qpdssI0+w=
 golang.org/x/crypto v0.0.0-20210921155107-089bfa567519/go.mod h1:GvvjBRRGRdwPK5ydBHafDWAxML/pGHZbMvKqRZ5+Abc=

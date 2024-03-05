@@ -5,7 +5,7 @@ go 1.21.6
 require (
 	github.com/ringsq/vcenterapi v0.0.0-20240229193443-f2566ce03477
 	github.com/rsapc/hookcmd v0.0.0-20240228165245-7a165828a6f1
-	github.com/rsapc/netbox v0.0.0-20240305161713-4fa7a06c0387
+	github.com/rsapc/netbox v0.0.0-20240305171311-1f4bd6a240ad
 )
 
 require (
