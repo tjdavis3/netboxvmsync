@@ -31,7 +31,7 @@ func NewSyncService(netbox *netbox.Client, provider VMProvider, logger models.Lo
 
 func (s *Sync) StartSync() {
 	if err := s.VerifyCustomFields(); err != nil {
-		s.log.Error("could not verify or create custom fields")
+		s.log.Error("could not verify or create custom fields", "error", err)
 		os.Exit(1)
 	}
 	s.log.Info("retrieving datacenters")
@@ -70,12 +70,20 @@ func (s *Sync) StartSync() {
 					newvm.ClusterID = nbCluster.ID
 					newvm.Diskspace = vm.Diskspace
 					newvm.Memory = vm.Memory
+
 					// TODO: Set VM status based on power / status in the provider
 					// TODO: Add network interfaces and IP to Netbox
 					// TODO: Set the cf_vmid
 					nbVm, err = s.netbox.AddVM(*newvm)
 					if err != nil {
 						s.log.Error("failed to add vm", "VM", vm.Name)
+					}
+					payload := make(map[string]interface{})
+					cf := make(map[string]interface{})
+					cf["vmid"] = vm.ID
+					payload["custom_fields"] = cf
+					if err = s.netbox.UpdateObjectByURL(nbVm.URL, payload); err != nil {
+						s.log.Error("could not set vmID on vm", "vm", vm.Name, "error", err)
 					}
 				}
 				// TODO: Update VM if changed
