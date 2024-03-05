@@ -30,6 +30,10 @@ func NewSyncService(netbox *netbox.Client, provider VMProvider, logger models.Lo
 //TODO: Add the ability to iterate through Netbox and decommision VMs that no longer appear in vmware
 
 func (s *Sync) StartSync() {
+	if err := s.VerifyCustomFields(); err != nil {
+		s.log.Error("could not verify or create custom fields")
+		os.Exit(1)
+	}
 	s.log.Info("retrieving datacenters")
 	dcs, _ := s.vmProvider.GetDatacenters()
 
@@ -79,4 +83,16 @@ func (s *Sync) StartSync() {
 			}
 		}
 	}
+}
+
+// VerifyCustomFields ensures required fields exist in Netbox
+func (s *Sync) VerifyCustomFields() error {
+	exist, err := s.netbox.CustomFieldExists("vmid")
+	if err != nil {
+		return err
+	}
+	if !exist {
+		return s.netbox.AddCustomField("vmid", "Provider VM ID", true, "virtualmachine")
+	}
+	return nil
 }
