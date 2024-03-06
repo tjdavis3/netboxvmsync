@@ -1,0 +1,9 @@
+# https://taskfile.dev
+
+version: '3'
+
+tasks:
+  netbox:
+    desc: Update the sha version of the netbox library
+    cmds:
+      - go get github.com/rsapc/netbox@{{.CLI_ARGS}}
