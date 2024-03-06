@@ -31,6 +31,9 @@ func (s *Sync) StartSync() {
 		s.log.Error("could not verify or create custom fields", "error", err)
 		os.Exit(1)
 	}
+	if err := s.VerifyClusterType(); err != nil {
+		os.Exit(1)
+	}
 	s.log.Info("retrieving datacenters")
 	dcs, _ := s.vmProvider.GetDatacenters()
 
@@ -148,6 +151,23 @@ func (s *Sync) VerifyCustomFields() error {
 	}
 	if !exist {
 		return s.netbox.AddCustomField("vmid", "Provider VM ID", true, "virtualmachine")
+	}
+	return nil
+}
+
+// Verify ClusterType exists
+func (s *Sync) VerifyClusterType() error {
+	_, err := s.netbox.GetClusterType(s.vmProvider.GetName())
+	if err != nil {
+		if errors.Is(err, netbox.ErrNotFound) {
+			_, err := s.netbox.AddClusterType(s.vmProvider.GetName())
+			if err != nil {
+				s.log.Error("could not create cluster type", "type", s.vmProvider.GetName(), "error", err)
+				return err
+			}
+		} else {
+			return err
+		}
 	}
 	return nil
 }
