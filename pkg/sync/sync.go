@@ -65,10 +65,38 @@ func (s *Sync) StartSync() {
 					}
 				}
 				// Update VM if changed
-				_ = nbVm
+				s.UpdateVM(nbVm, vm)
 			}
 		}
 	}
+}
+
+// UpdateVM compares the netbox VM to the provider VM and makes updates as necessary
+func (s *Sync) UpdateVM(nbVM netbox.DeviceOrVM, vm VM) error {
+	doUpdate := false
+	editVM := &netbox.NewVM{Name: vm.Name}
+	if nbVM.Diskspace != vm.Diskspace {
+		editVM.Diskspace = vm.Diskspace
+		doUpdate = true
+	}
+	if nbVM.Memory != vm.Memory {
+		editVM.Memory = vm.Memory
+		doUpdate = true
+	}
+	if nbVM.Status.Value != vm.Status {
+		editVM.Status = vm.Status
+		doUpdate = true
+	}
+	if doUpdate {
+		if err := s.netbox.UpdateObject("virtualmachine", int64(nbVM.ID), editVM); err != nil {
+			s.log.Error("could not update VM", "vm", nbVM.Name, "error", err)
+			return err
+		}
+	}
+
+	// Update any changed interfaces
+
+	return nil
 }
 
 // AddVMtoCluster creates a new VM under the given cluster ID

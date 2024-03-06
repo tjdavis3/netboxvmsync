@@ -4,7 +4,7 @@ go 1.21.6
 
 require (
 	github.com/ringsq/vcenterapi v0.0.0-20240229193443-f2566ce03477
-	github.com/rsapc/netbox v0.0.0-20240305234219-54f36d345c1b
+	github.com/rsapc/netbox v0.0.0-20240306005717-6b07becefa7a
 )
 
 require (
