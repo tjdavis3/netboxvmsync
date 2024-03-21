@@ -28,14 +28,18 @@ type NIC struct {
 	ID          string
 	Name        string
 	MAC         string
-	IP          string
+	IP          []string
 	Description string
 }
 
 type VMProvider interface {
+	// GetDatacenters returns a list of all datacenters managed by this provider
 	GetDatacenters() ([]Datacenter, error)
+	// GetDcClusters gets a list of clusters for the given datacenter ID
 	GetDcClusters(datacenterID string) ([]Cluster, error)
+	// GetClusterVMs returns a list of VMs for the given cluster ID
 	GetClusterVMs(clusterID string) ([]VM, error)
+	// GetName returns the name of the VMProvider (eg. vmware)
 	GetName() string
 }
 

@@ -60,15 +60,21 @@ func (s *Sync) StartSync() {
 				log.Fatal(err)
 			}
 			for _, vm := range vms {
-				var nbVm netbox.DeviceOrVM
 				nbVms, err := s.netbox.SearchVMs(fmt.Sprintf("cf_vmid=%s", vm.ID))
-				if (err != nil && errors.Is(err, netbox.ErrNotFound)) || len(nbVms) == 0 {
+				if err != nil {
+					if !errors.Is(err, netbox.ErrNotFound) {
+						s.log.Warn("error searching for VM", "VM", vm.Name, "error", err)
+						continue
+					}
+				}
+				if len(nbVms) == 0 {
 					if err = s.AddVMtoCluster(nbCluster.ID, vm); err != nil {
 						s.log.Error("error adding VM", "error", err)
 					}
+				} else {
+					// Update VM if changed
+					s.UpdateVM(nbVms[0], vm)
 				}
-				// Update VM if changed
-				s.UpdateVM(nbVm, vm)
 			}
 		}
 	}
@@ -135,8 +141,20 @@ func (s *Sync) AddVMtoCluster(clusterID int, vm VM) error {
 			VM:          &nbVm.ID,
 			Description: nic.Description,
 		}
-		if err = s.netbox.AddInterface("virtualmachine", int64(nbVm.ID), intf); err != nil {
+		newIntf, err := s.netbox.AddInterface("virtualmachine", int64(nbVm.ID), intf)
+		if err != nil {
 			s.log.Error("could not add interface", "vm", vm.Name, "nic", nic.Name, "error", err)
+		} else {
+			for _, ipaddr := range nic.IP {
+				if ip, err := s.netbox.AddIP(ipaddr); err == nil {
+					ipdata := make(map[string]interface{})
+					ipdata["assigned_object_type"] = "virtualization.vminterface"
+					ipdata["assigned_object_id"] = newIntf.ID
+					if err = s.netbox.UpdateObject("ip-address", int64(ip.ID), ipdata); err != nil {
+						s.log.Error("Could not assign ipaddress", "IP", ip.Address, "device", newIntf.Device.Name, "Interface", newIntf.Name, "error", err)
+					}
+				}
+			}
 		}
 	}
 

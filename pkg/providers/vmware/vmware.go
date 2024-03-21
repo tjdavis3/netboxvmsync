@@ -105,6 +105,13 @@ func (v *VmwareProvider) GetClusterVMs(clusterID string) ([]sync.VM, error) {
 			adapter.MAC = nic.MacAddress
 			adapter.Name = nic.Label
 			adapter.Description = fmt.Sprintf("%s %s to %s/%s", nic.Type, nic.State, nic.Backing.Type, nic.Backing.Network)
+			for _, intf := range vm.VMinterfaces {
+				if intf.MacAddress == nic.MacAddress {
+					for _, ip := range intf.IP.IPAddresses {
+						adapter.IP = append(adapter.IP, fmt.Sprintf("%s/%d", ip.IPAddress, ip.PrefixLength))
+					}
+				}
+			}
 			vmDetail.Network = append(vmDetail.Network, adapter)
 		}
 		vms = append(vms, vmDetail)

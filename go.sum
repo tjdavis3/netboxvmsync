@@ -2,6 +2,8 @@ github.com/go-resty/resty/v2 v2.11.0 h1:i7jMfNOJYMp69lq7qozJP+bjgzfAzeOhuGlyDrqx
 github.com/go-resty/resty/v2 v2.11.0/go.mod h1:iiP/OpA0CkcL3IGt1O0+/SIItFUbkkyw5BGXiVdTu+A=
 github.com/ringsq/vcenterapi v0.0.0-20240229193443-f2566ce03477 h1:D6EraD69CslAitMivXyDURtC+C2Hq3nO3AeLYJ5+gtk=
 github.com/ringsq/vcenterapi v0.0.0-20240229193443-f2566ce03477/go.mod h1:aR/J0fTiVvzIcSln1oajP52rOzEQEpdQLJ4lCAUDLxM=
+github.com/ringsq/vcenterapi v0.0.0-20240320174002-fd0df8347ac2 h1:VszL4tbL5dPCd0UIWhzuwdDzrxtGk/MTuKUkpv9vW1Q=
+github.com/ringsq/vcenterapi v0.0.0-20240320174002-fd0df8347ac2/go.mod h1:aR/J0fTiVvzIcSln1oajP52rOzEQEpdQLJ4lCAUDLxM=
 github.com/rsapc/hookcmd v0.0.0-20240228165245-7a165828a6f1 h1:WRwSs8OTwovWOaXBFd4B6tibeo71y6ui5rhH5DJDVvQ=
 github.com/rsapc/hookcmd v0.0.0-20240228165245-7a165828a6f1/go.mod h1:5/BxMt4GiYEPOe8cTzMjtvmYnHFZ5AS3jQSG2rOLZw4=
 github.com/rsapc/netbox v0.0.0-20240305171311-1f4bd6a240ad h1:1z7rmhq6tmagR8VEeUzs00zKDzODZQ6byoXf5qP2t3k=
@@ -14,6 +16,12 @@ github.com/rsapc/netbox v0.0.0-20240306162938-a64475914363 h1:tnzvUMPU39C2tmXmTC
 github.com/rsapc/netbox v0.0.0-20240306162938-a64475914363/go.mod h1:CdtnwIjXwF83qyFB516OKL4EAalFOaiWdbEvbVA4gsM=
 github.com/rsapc/netbox v0.0.0-20240306180330-f8a360e6541f h1:rKpH5g9TT2SRyDFpjE0mPjSCVpmeU4rXMhe1AxnIN2Q=
 github.com/rsapc/netbox v0.0.0-20240306180330-f8a360e6541f/go.mod h1:CdtnwIjXwF83qyFB516OKL4EAalFOaiWdbEvbVA4gsM=
+github.com/rsapc/netbox v0.0.0-20240320195319-1dc3d3eb00f7 h1:1fD07cl/iYCRMrSfJCuVheQVcAytkdxqkNoUP+vOGD0=
+github.com/rsapc/netbox v0.0.0-20240320195319-1dc3d3eb00f7/go.mod h1:CdtnwIjXwF83qyFB516OKL4EAalFOaiWdbEvbVA4gsM=
+github.com/rsapc/netbox v0.0.0-20240320195943-904d88250e55 h1:S19Z/++fu1UqXGrLsjkUkOK5rI8zbT2Hbwx2hllRpsM=
+github.com/rsapc/netbox v0.0.0-20240320195943-904d88250e55/go.mod h1:CdtnwIjXwF83qyFB516OKL4EAalFOaiWdbEvbVA4gsM=
+github.com/rsapc/netbox v0.0.0-20240320202931-8dfc6211d51b h1:Rde5DuD290k2/NHp9hv2nPTaO6Lnj+RYW3xeueYV8tg=
+github.com/rsapc/netbox v0.0.0-20240320202931-8dfc6211d51b/go.mod h1:CdtnwIjXwF83qyFB516OKL4EAalFOaiWdbEvbVA4gsM=
 github.com/yuin/goldmark v1.4.13/go.mod h1:6yULJ656Px+3vBD8DxQVa3kxgyrAnzto9xy5taEt/CY=
 golang.org/x/crypto v0.0.0-20190308221718-c2843e01d9a2/go.mod h1:djNgcEr1/C05ACkg1iLfiJU5Ep61QUkGW8qpdssI0+w=
 golang.org/x/crypto v0.0.0-20210921155107-089bfa567519/go.mod h1:GvvjBRRGRdwPK5ydBHafDWAxML/pGHZbMvKqRZ5+Abc=

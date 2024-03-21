@@ -3,8 +3,8 @@ module github.com/ringsq/netboxvmsync
 go 1.21.6
 
 require (
-	github.com/ringsq/vcenterapi v0.0.0-20240229193443-f2566ce03477
-	github.com/rsapc/netbox v0.0.0-20240306180330-f8a360e6541f
+	github.com/ringsq/vcenterapi v0.0.0-20240320174002-fd0df8347ac2
+	github.com/rsapc/netbox v0.0.0-20240320202931-8dfc6211d51b
 )
 
 require (
