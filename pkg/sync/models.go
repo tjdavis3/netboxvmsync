@@ -1,6 +1,10 @@
 package sync
 
-import "errors"
+import (
+	"errors"
+
+	"github.com/rsapc/netbox"
+)
 
 type Datacenter struct {
 	ID          string
@@ -43,4 +47,35 @@ type VMProvider interface {
 	GetName() string
 }
 
+type NBVM struct {
+	netbox.DeviceOrVM
+	Interfaces []netbox.Interface
+	IPs        []NetboxIP
+}
+
+type Netbox interface {
+	GetVM(id string) (vm NBVM, err error)
+	Compare(vm NBVM, pVm VM) map[string]interface{}
+	UpdateVM(map[string]interface{})
+	AddVM(vm VM)
+	DeleteVM(url string)
+}
+
 var ErrNotImplemented = errors.New("method has not been implemented")
+
+type CustomField struct {
+	Name     string
+	Label    string
+	Readonly bool
+	Types    []string
+}
+
+type NetboxIP struct {
+	ID           int
+	URL          string
+	Address      string
+	Status       string
+	InterfaceID  int
+	Description  *string
+	CustomFields *map[string]any
+}

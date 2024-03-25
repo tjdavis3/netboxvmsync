@@ -7,3 +7,26 @@ tasks:
     desc: Update the sha version of the netbox library
     cmds:
       - go get github.com/rsapc/netbox@{{.CLI_ARGS}}
+  dorun:
+    dotenv: [ .env ]
+    vars:
+      NETBOX_URL: "${{.RUNAS}}_URL"
+      NETBOX_TOKEN: "${{.RUNAS}}_TOKEN"
+    requires:
+      vars:
+        - RUNAS
+    cmds:
+      - NETBOX_URL={{ .NETBOX_URL }} NETBOX_TOKEN={{.NETBOX_TOKEN}} go run main.go
+    internal: true
+
+  run:
+    cmds:
+      - task: dorun
+        vars:
+          RUNAS: 'TJD'
+
+  runrsq:
+    cmds:
+      - task: dorun
+        vars:
+          RUNAS: 'RINGSQ'
