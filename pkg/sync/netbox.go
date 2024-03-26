@@ -2,6 +2,7 @@ package sync
 
 import (
 	"fmt"
+	"net/url"
 
 	"github.com/rsapc/netbox"
 )
@@ -9,7 +10,7 @@ import (
 func (s *Sync) GetVMbyName(clusterID int, name string) (NBVM, error) {
 	vm := &NBVM{}
 	args := []string{
-		fmt.Sprintf("name=%s", name),
+		fmt.Sprintf("name=%s", url.QueryEscape(name)),
 		fmt.Sprintf("cluster_id=%d", clusterID),
 	}
 	nbVms, err := s.netbox.SearchVMs(args...)

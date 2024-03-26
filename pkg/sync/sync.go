@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"log/slog"
+	"net/url"
 	"os"
 	"time"
 
@@ -325,7 +326,7 @@ func (s *Sync) buildIDandProviderFields(vmid string) map[string]any {
 // device will be deleted
 func (s *Sync) Prune(cluster netbox.Cluster, pvms []VM) error {
 	s.log.Info("Pruning removed VMs", "cluster", cluster.Name)
-	vms, err := s.netbox.SearchVMs(fmt.Sprintf("vmprovider=%s", s.vmProvider.GetName()), fmt.Sprintf("cluster_id=%d", cluster.ID))
+	vms, err := s.netbox.SearchVMs(fmt.Sprintf("vmprovider=%s", url.QueryEscape(s.vmProvider.GetName())), fmt.Sprintf("cluster_id=%d", cluster.ID))
 	if err != nil {
 		s.log.Error("error retrieving netbox VMs for cluster", "cluster", cluster.Name, "error", err)
 		return err
