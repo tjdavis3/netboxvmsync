@@ -332,6 +332,10 @@ func (s *Sync) Prune(cluster netbox.Cluster, pvms []VM) error {
 		return err
 	}
 	for _, vm := range vms {
+		vmid, ok := vm.CustomFieldsMap["vmid"]
+		if !ok || vmid == nil {
+			continue
+		}
 		if err = s.validateNBvm(vm, pvms); err != nil {
 			s.log.Error("Prune error", "error", err)
 		}
@@ -343,7 +347,11 @@ func (s *Sync) validateNBvm(vm netbox.DeviceOrVM, pvms []VM) error {
 	var err error
 	found := false
 	for _, pvm := range pvms {
-		if vm.CustomFieldsMap["vmid"] == pvm.ID {
+		vmid, ok := vm.CustomFieldsMap["vmid"]
+		if !ok {
+			continue
+		}
+		if fmt.Sprint(vmid) == pvm.ID {
 			found = true
 			break
 		}
