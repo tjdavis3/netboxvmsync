@@ -69,12 +69,24 @@ func (s *Sync) StartSync() {
 }
 
 func (s *Sync) processVM(nbCluster netbox.Cluster, vm VM) {
+	found := false
 	nbVM, err := s.GetVM(vm.ID)
-	if err != nil && errors.Is(err, netbox.ErrNotFound) {
-		if err = s.AddVMtoCluster(nbCluster.ID, vm); err != nil {
-			s.log.Error("error adding VM", "error", err)
+	if err != nil {
+		if errors.Is(err, netbox.ErrNotFound) {
+			nbVM, err = s.GetVMbyName(nbCluster.ID, vm.Name)
+			if err == nil {
+				found = true
+				s.setIDandProvider(nbVM.URL, vm.ID)
+			} else if errors.Is(err, netbox.ErrNotFound) {
+				if err = s.AddVMtoCluster(nbCluster.ID, vm); err != nil {
+					s.log.Error("error adding VM", "error", err)
+				}
+			}
 		}
 	} else {
+		found = true
+	}
+	if found {
 		// Update VM if changed
 		s.UpdateVM(nbVM, vm)
 	}
