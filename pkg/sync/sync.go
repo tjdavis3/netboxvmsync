@@ -158,8 +158,10 @@ func (s *Sync) updateVMInterface(nbint netbox.Interface, nic NIC) error {
 // one exists with the vmid that matches the interface ID
 func findInterface(intf NIC, nbInts []netbox.Interface) (bool, netbox.Interface) {
 	for _, nbint := range nbInts {
-		if nbint.CustomFields["vmid"] == nbint.ID {
-			return true, nbint
+		if vmid, ok := nbint.CustomFields["vmid"]; ok {
+			if fmt.Sprint(vmid) == intf.ID {
+				return true, nbint
+			}
 		}
 	}
 	return false, netbox.Interface{}
@@ -205,6 +207,7 @@ func (s *Sync) addInterface(vmid int, nic NIC) {
 	if err != nil {
 		s.log.Error("could not add interface", "vm", vmid, "nic", nic.Name, "error", err)
 	} else {
+		s.setIDandProvider(newIntf.URL, nic.ID)
 		for _, ipaddr := range nic.IP {
 			s.addInterfaceIP(newIntf.ID, ipaddr, nic.ID)
 		}
@@ -232,13 +235,13 @@ func (s *Sync) VerifyCustomFields() error {
 			Name:     "vmid",
 			Label:    "Provider VM ID",
 			Readonly: true,
-			Types:    []string{"virtualmachine", "ipaddress", "cluster", "cluster-group"},
+			Types:    []string{"virtualmachine", "ipaddress", "cluster", "cluster-group", "vminterface"},
 		},
 		{
 			Name:     "vmprovider",
 			Label:    "Virtualization Provider",
 			Readonly: true,
-			Types:    []string{"virtualmachine", "ipaddress", "cluster", "cluster-group"},
+			Types:    []string{"virtualmachine", "ipaddress", "cluster", "cluster-group", "vminterface"},
 		},
 	}
 	for _, field := range fields {

@@ -5,6 +5,7 @@ import (
 	"log/slog"
 	"os"
 
+	"github.com/joho/godotenv"
 	"github.com/ringsq/netboxvmsync/pkg/providers/vmware"
 	"github.com/ringsq/netboxvmsync/pkg/sync"
 	"github.com/rsapc/netbox"
@@ -42,6 +43,7 @@ func main() {
 
 func Configure(getenv func(string) string) Config {
 	cfg := Config{}
+	godotenv.Load()
 	cfg.NetboxURL = getenv("NETBOX_URL")
 	cfg.NetboxToken = getenv("NETBOX_TOKEN")
 	cfg.ProviderURL = getenv("PROVIDER_URL")

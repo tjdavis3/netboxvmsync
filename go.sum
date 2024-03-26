@@ -1,5 +1,7 @@
 github.com/go-resty/resty/v2 v2.11.0 h1:i7jMfNOJYMp69lq7qozJP+bjgzfAzeOhuGlyDrqxT/8=
 github.com/go-resty/resty/v2 v2.11.0/go.mod h1:iiP/OpA0CkcL3IGt1O0+/SIItFUbkkyw5BGXiVdTu+A=
+github.com/joho/godotenv v1.5.1 h1:7eLL/+HRGLY0ldzfGMeQkb7vMd0as4CfYvUVzLqw0N0=
+github.com/joho/godotenv v1.5.1/go.mod h1:f4LDr5Voq0i2e/R5DDNOoa2zzDfwtkZa6DnEwAbqwq4=
 github.com/ringsq/vcenterapi v0.0.0-20240229193443-f2566ce03477 h1:D6EraD69CslAitMivXyDURtC+C2Hq3nO3AeLYJ5+gtk=
 github.com/ringsq/vcenterapi v0.0.0-20240229193443-f2566ce03477/go.mod h1:aR/J0fTiVvzIcSln1oajP52rOzEQEpdQLJ4lCAUDLxM=
 github.com/ringsq/vcenterapi v0.0.0-20240320174002-fd0df8347ac2 h1:VszL4tbL5dPCd0UIWhzuwdDzrxtGk/MTuKUkpv9vW1Q=
@@ -40,6 +42,10 @@ github.com/rsapc/netbox v0.0.0-20240326152342-bf5a2220b313 h1:NEDV9z/zGq5xR1gYvT
 github.com/rsapc/netbox v0.0.0-20240326152342-bf5a2220b313/go.mod h1:CdtnwIjXwF83qyFB516OKL4EAalFOaiWdbEvbVA4gsM=
 github.com/rsapc/netbox v0.0.0-20240326161531-0165f35c7f9f h1:V9h5G3qXDv8ywCzew3SaaulaMryA0I4wrbLOerNOyWE=
 github.com/rsapc/netbox v0.0.0-20240326161531-0165f35c7f9f/go.mod h1:CdtnwIjXwF83qyFB516OKL4EAalFOaiWdbEvbVA4gsM=
+github.com/rsapc/netbox v0.0.0-20240326171822-3e8d48f72c98 h1:Mm8iA94oq0xYnx+5Ols5lmMr3L/XEALjLk2NPGdlEMU=
+github.com/rsapc/netbox v0.0.0-20240326171822-3e8d48f72c98/go.mod h1:CdtnwIjXwF83qyFB516OKL4EAalFOaiWdbEvbVA4gsM=
+github.com/rsapc/netbox v0.0.0-20240326172611-8394affb5f56 h1:X5kU8N76XBpb9/vRSdYT8keiQAh96rbFc7aC/YPP8V8=
+github.com/rsapc/netbox v0.0.0-20240326172611-8394affb5f56/go.mod h1:CdtnwIjXwF83qyFB516OKL4EAalFOaiWdbEvbVA4gsM=
 github.com/yuin/goldmark v1.4.13/go.mod h1:6yULJ656Px+3vBD8DxQVa3kxgyrAnzto9xy5taEt/CY=
 golang.org/x/crypto v0.0.0-20190308221718-c2843e01d9a2/go.mod h1:djNgcEr1/C05ACkg1iLfiJU5Ep61QUkGW8qpdssI0+w=
 golang.org/x/crypto v0.0.0-20210921155107-089bfa567519/go.mod h1:GvvjBRRGRdwPK5ydBHafDWAxML/pGHZbMvKqRZ5+Abc=

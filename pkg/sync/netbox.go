@@ -28,7 +28,7 @@ func (s *Sync) GetVM(id string) (NBVM, error) {
 	// GetIPs
 	ips := make([]NetboxIP, 0)
 	ipSearchResult := &netbox.IPSearchResults{}
-	err = s.netbox.Search("ipaddress", ipSearchResult)
+	err = s.netbox.Search("ipaddress", ipSearchResult, fmt.Sprintf("virtual_machine_id=%d", vm.ID))
 	if err != nil {
 		return *vm, err
 	}
