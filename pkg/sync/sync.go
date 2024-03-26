@@ -2,9 +2,11 @@ package sync
 
 import (
 	"errors"
+	"fmt"
 	"log"
 	"log/slog"
 	"os"
+	"time"
 
 	"github.com/ringsq/netboxvmsync/pkg"
 	"github.com/rsapc/netbox"
@@ -61,6 +63,7 @@ func (s *Sync) StartSync() {
 			for _, vm := range vms {
 				s.processVM(nbCluster, vm)
 			}
+			_ = s.Prune(nbCluster, vms)
 		}
 	}
 }
@@ -293,4 +296,56 @@ func (s *Sync) buildIDandProviderFields(vmid string) map[string]any {
 	cf["vmid"] = vmid
 	cf["vmprovider"] = s.vmProvider.GetName()
 	return cf
+}
+
+// Prune will look through all VMs in Netbox for the given cluster
+// that were created by the sync
+// if they are "active" in Netbox but do not exist in VMWARE their status
+// will be set to Decommissioning.  If it's already decommissioning the
+// device will be deleted
+func (s *Sync) Prune(cluster netbox.Cluster, pvms []VM) error {
+	s.log.Info("Pruning removed VMs", "cluster", cluster.Name)
+	vms, err := s.netbox.SearchVMs(fmt.Sprintf("vmprovider=%s", s.vmProvider.GetName()), fmt.Sprintf("cluster_id=%d", cluster.ID))
+	if err != nil {
+		s.log.Error("error retrieving netbox VMs for cluster", "cluster", cluster.Name, "error", err)
+		return err
+	}
+	for _, vm := range vms {
+		if err = s.validateNBvm(vm, pvms); err != nil {
+			s.log.Error("Prune error", "error", err)
+		}
+	}
+	return err
+}
+
+func (s *Sync) validateNBvm(vm netbox.DeviceOrVM, pvms []VM) error {
+	var err error
+	found := false
+	for _, pvm := range pvms {
+		if vm.CustomFieldsMap["vmid"] == pvm.ID {
+			found = true
+			break
+		}
+	}
+	if !found {
+		data := make(map[string]interface{})
+		if vm.Status.Value == "active" || vm.Status.Value == "offline" {
+			data["status"] = "decommissioning"
+			s.log.Info("decommissioning VM", "vm", vm.Name)
+			err = s.netbox.UpdateObjectByURL(vm.URL, data)
+		} else if vm.Status.Value == "decommissioning" {
+			now := time.Now()
+			updated, err := time.Parse(time.RFC3339, vm.LastUpdated)
+			if err != nil {
+				s.log.Error("Invalid last updated time", "error", err)
+				return err
+			}
+			removeOn := updated.Add(30 * 24 * time.Hour)
+			if now.After(removeOn) {
+				s.log.Warn("Deleting VM", "vm", vm.Name)
+				err = s.netbox.DeleteObjectByURL(vm.URL)
+			}
+		}
+	}
+	return err
 }
