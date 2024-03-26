@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"log/slog"
+	"os"
 
 	"github.com/ringsq/netboxvmsync/pkg/providers/vmware"
 	"github.com/ringsq/netboxvmsync/pkg/sync"
@@ -18,25 +19,33 @@ var (
 	netboxes map[string]nbSite
 )
 
-func init() {
-	netboxes = make(map[string]nbSite)
-	netboxes["tjd"] = nbSite{ID: "0123456789abcdef0123456789abcdef01234567",
-		URL: "http://192.168.131.78:8000"}
-	netboxes["ringsq"] = nbSite{
-		ID:  "b973ce7c2989f230170a94376f47824c1215be57",
-		URL: "https://netbox.ringsq.io"}
+type Config struct {
+	NetboxURL     string `env:"NETBOX_URL"`
+	NetboxToken   string `env:"NETBOX_TOKEN"`
+	ProviderURL   string `env:"PROVIDER_URL"`
+	ProviderUser  string `env:"PROVIDER_USER"`
+	ProviderToken string `env:"PROVIDER_TOKEN"`
 }
 
 func main() {
-	site := "tjd"
-	url := netboxes[site].URL
-	token := netboxes[site].ID
-	nb := netbox.NewClient(url, token, slog.Default())
+	cfg := Configure(os.Getenv)
+	nb := netbox.NewClient(cfg.NetboxURL, cfg.NetboxToken, slog.Default())
+	slog.Info("Created Netbox client", "url", cfg.NetboxURL)
 
-	provider, err := vmware.NewVmwareProvider("https://vcenter01.ringsquared.com", "todd.davis", "G4^$X5DxJp65kj2y@mSRHC2Kb", slog.Default())
+	provider, err := vmware.NewVmwareProvider(cfg.ProviderURL, cfg.ProviderUser, cfg.ProviderToken, slog.Default())
 	if err != nil {
 		log.Fatal(err)
 	}
 	service := sync.NewSyncService(nb, provider, slog.Default())
 	service.StartSync()
+}
+
+func Configure(getenv func(string) string) Config {
+	cfg := Config{}
+	cfg.NetboxURL = getenv("NETBOX_URL")
+	cfg.NetboxToken = getenv("NETBOX_TOKEN")
+	cfg.ProviderURL = getenv("PROVIDER_URL")
+	cfg.ProviderUser = getenv("PROVIDER_USER")
+	cfg.ProviderToken = getenv("PROVIDER_TOKEN")
+	return cfg
 }

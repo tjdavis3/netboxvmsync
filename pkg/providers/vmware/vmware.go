@@ -22,6 +22,7 @@ func NewVmwareProvider(baseURL string, username string, password string, logger 
 	if log, ok := logger.(*slog.Logger); ok {
 		vmw.log = log.With("provider", vmw.GetName())
 	}
+	vmw.log.Info("Connecting...", "user", username)
 	vcntr, err := vcenter.NewClient(baseURL, username, password, vmw.log)
 	if err != nil {
 		vmw.log.Error("failed to connect to vmware", "error", err)
