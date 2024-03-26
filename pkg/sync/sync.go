@@ -93,6 +93,10 @@ func (s *Sync) UpdateVM(nbVM NBVM, vm VM) error {
 		editVM.Memory = vm.Memory
 		doUpdate = true
 	}
+	if nbVM.VCPUs != vm.VCPUs {
+		editVM.VCPUs = vm.VCPUs
+		doUpdate = true
+	}
 	if nbVM.Status.Value != vm.Status {
 		editVM.Status = vm.Status
 		doUpdate = true
@@ -175,6 +179,7 @@ func (s *Sync) AddVMtoCluster(clusterID int, vm VM) error {
 	newvm.ClusterID = clusterID
 	newvm.Diskspace = vm.Diskspace
 	newvm.Memory = vm.Memory
+	newvm.VCPUs = vm.VCPUs
 	newvm.Status = vm.Status
 
 	nbVm, err := s.netbox.AddVM(*newvm)

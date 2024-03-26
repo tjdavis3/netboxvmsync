@@ -24,6 +24,7 @@ type VM struct {
 	Description string
 	Memory      int
 	Diskspace   int
+	VCPUs       float32
 	Network     []NIC
 	Status      string
 }
