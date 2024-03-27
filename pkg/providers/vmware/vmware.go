@@ -3,6 +3,7 @@ package vmware
 import (
 	"fmt"
 	"log/slog"
+	"strings"
 
 	"github.com/ringsq/netboxvmsync/pkg"
 	"github.com/ringsq/netboxvmsync/pkg/sync"
@@ -104,7 +105,7 @@ func (v *VmwareProvider) GetClusterVMs(clusterID string) ([]sync.VM, error) {
 		for nicID, nic := range vm.Nics {
 			adapter := sync.NIC{}
 			adapter.ID = nicID
-			adapter.MAC = nic.MacAddress
+			adapter.MAC = strings.ToUpper(nic.MacAddress)
 			adapter.Name = nic.Label
 			adapter.Description = fmt.Sprintf("%s %s to %s/%s", nic.Type, nic.State, nic.Backing.Type, nic.Backing.Network)
 			for _, intf := range vm.VMinterfaces {

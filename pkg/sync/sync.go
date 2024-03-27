@@ -7,6 +7,7 @@ import (
 	"log/slog"
 	"net/url"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/ringsq/netboxvmsync/pkg"
@@ -162,7 +163,7 @@ func getInterfaceIPs(nbvm NBVM, intID int) []NetboxIP {
 
 func (s *Sync) updateVMInterface(nbint netbox.Interface, nic NIC) error {
 	data := make(map[string]interface{})
-	if nbint.MacAddress != &nic.MAC {
+	if !strings.EqualFold(*nbint.MacAddress, nic.MAC) {
 		data["mac_address"] = nic.MAC
 	}
 	if len(data) > 0 {
