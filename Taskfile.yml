@@ -8,8 +8,16 @@ tasks:
     cmds:
       - go get github.com/rsapc/netbox@{{.CLI_ARGS}}
   run:
+    desc: Run from source using the .env environment
     dotenv: [ .env ]
     cmds:
       -  go run main.go
+
+  build:
+    desc: Build the linux binary
+    env: 
+      GOOS: linux
+    cmds:
+      - go build
 
 
