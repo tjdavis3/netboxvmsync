@@ -20,7 +20,11 @@ func (s *Sync) GetVMbyName(clusterID int, name string) (NBVM, error) {
 	if len(nbVms) == 0 {
 		return *vm, netbox.ErrNotFound
 	}
-	vm = &NBVM{nbVms[0], nil, nil}
+	if len(nbVms) == 1 {
+		vm = &NBVM{nbVms[0], nil, nil}
+	} else {
+		return *vm, fmt.Errorf("too many VMs returned: %d", len(nbVms))
+	}
 	err = s.loadVMinterfacesAndIP(vm)
 	return *vm, err
 }
@@ -34,7 +38,19 @@ func (s *Sync) GetVM(id string) (NBVM, error) {
 	if len(nbVms) == 0 {
 		return *vm, netbox.ErrNotFound
 	}
-	vm = &NBVM{nbVms[0], nil, nil}
+	found := false
+	for _, nbVM := range nbVms {
+		if vmid, ok := nbVM.CustomFieldsMap["vmid"]; ok {
+			if fmt.Sprint(vmid) == id {
+				vm = &NBVM{nbVM, nil, nil}
+				found = true
+				break
+			}
+		}
+	}
+	if !found {
+		return *vm, netbox.ErrNotFound
+	}
 	err = s.loadVMinterfacesAndIP(vm)
 	return *vm, err
 }
