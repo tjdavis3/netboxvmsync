@@ -12,6 +12,8 @@ import (
 
 const VM_STATUS_ON = "POWERED_ON"
 
+var _ sync.VMProvider = (*VmwareProvider)(nil)
+
 type VmwareProvider struct {
 	vcenter *vcenter.Vcenter
 	log     pkg.Logger
