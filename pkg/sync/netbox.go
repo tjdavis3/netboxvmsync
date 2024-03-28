@@ -31,7 +31,11 @@ func (s *Sync) GetVMbyName(clusterID int, name string) (NBVM, error) {
 
 func (s *Sync) GetVM(id string) (NBVM, error) {
 	vm := &NBVM{}
-	nbVms, err := s.netbox.SearchVMs(fmt.Sprintf("cf_vmid=%s", id))
+	args := []string{
+		fmt.Sprintf("cf_vmid=%s", id),
+		fmt.Sprintf("cf_vmprovider=%s", s.vmProvider.GetName()),
+	}
+	nbVms, err := s.netbox.SearchVMs(args...)
 	if err != nil {
 		return *vm, err
 	}
