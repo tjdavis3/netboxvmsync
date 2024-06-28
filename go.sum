@@ -84,6 +84,8 @@ github.com/rsapc/netbox v0.0.0-20240326201953-70884575e535 h1:ukxaQB5h26GlyPcnDm
 github.com/rsapc/netbox v0.0.0-20240326201953-70884575e535/go.mod h1:CdtnwIjXwF83qyFB516OKL4EAalFOaiWdbEvbVA4gsM=
 github.com/rsapc/netbox v0.0.0-20240628142922-82a5046987c3 h1:E87XFiGk5cJQN+ptYOBeMJLxIbzgzqKJIS0BjLkELdQ=
 github.com/rsapc/netbox v0.0.0-20240628142922-82a5046987c3/go.mod h1:CdtnwIjXwF83qyFB516OKL4EAalFOaiWdbEvbVA4gsM=
+github.com/rsapc/netbox v0.0.0-20240628202128-a56c0325f5ee h1:xwYX2uXA2y3ExQmB4a8o/UovFLGx/gr9FH7dSiNHh90=
+github.com/rsapc/netbox v0.0.0-20240628202128-a56c0325f5ee/go.mod h1:CdtnwIjXwF83qyFB516OKL4EAalFOaiWdbEvbVA4gsM=
 github.com/sirupsen/logrus v1.7.0/go.mod h1:yWOB1SBYBC5VeMP7gHvWumXLIWorT60ONWic61uBYv0=
 github.com/stretchr/testify v1.2.2/go.mod h1:a8OnRcib4nhh0OaRAV+Yts87kKdq0PP7pXfy6kDkUVs=
 github.com/stripe/safesql v0.2.0/go.mod h1:q7b2n0JmzM1mVGfcYpanfVb2j23cXZeWFxcILPn3JV4=

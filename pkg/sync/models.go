@@ -6,16 +6,28 @@ import (
 	"github.com/rsapc/netbox"
 )
 
+type ObjectID interface {
+	GetID() string
+}
+
 type Datacenter struct {
 	ID          string
 	Name        string
 	Description string
 }
 
+func (d Datacenter) GetID() string {
+	return d.ID
+}
+
 type Cluster struct {
 	ID          string
 	Name        string
 	Description string
+}
+
+func (c Cluster) GetID() string {
+	return c.ID
 }
 
 type VM struct {

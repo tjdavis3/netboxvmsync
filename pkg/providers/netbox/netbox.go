@@ -12,9 +12,11 @@ import (
 )
 
 type Netbox struct {
-	client *nb.Client
-	filter *string
-	log    pkg.Logger
+	client             *nb.Client
+	filter             *string
+	log                pkg.Logger
+	derivedDataCenters []sync.Datacenter
+	derivedClusters    []DerivedCluster
 }
 
 func NewNetboxProvider(netboxClient *nb.Client, filter *string, logger pkg.Logger) (*Netbox, error) {
@@ -22,12 +24,14 @@ func NewNetboxProvider(netboxClient *nb.Client, filter *string, logger pkg.Logge
 	if log, ok := logger.(*slog.Logger); ok {
 		nb.log = log.With("provider", nb.GetName())
 	}
-	return nb, nil
+	err := nb.deriveGroupsAndClusters()
+	return nb, err
 }
 
 // GetDatacenters returns a list of all datacenters managed by this provider
 func (nb *Netbox) GetDatacenters() ([]sync.Datacenter, error) {
 	var datacenters []sync.Datacenter
+	var ids []string
 	groups, err := nb.client.GetClusterGroups(nb.filter)
 	if err != nil {
 		return datacenters, err
@@ -38,16 +42,37 @@ func (nb *Netbox) GetDatacenters() ([]sync.Datacenter, error) {
 			Name:        group.Name,
 			Description: group.Description,
 		}
+		ids = append(ids, dc.ID)
 		datacenters = append(datacenters, dc)
 	}
+	for _, derived := range nb.derivedDataCenters {
+		if !objInArray(derived, ids) {
+			datacenters = append(datacenters, derived)
+		}
+	}
 	return datacenters, nil
+}
+
+func objInArray(obj sync.ObjectID, objArray []string) bool {
+	found := false
+	for _, arrObj := range objArray {
+		if obj.GetID() == arrObj {
+			found = true
+			break
+		}
+	}
+	return found
 }
 
 // GetDcClusters gets a list of clusters for the given datacenter ID
 func (nb *Netbox) GetDcClusters(datacenterID string) ([]sync.Cluster, error) {
 	var clusters []sync.Cluster
-
-	filter := fmt.Sprintf("group_id=%s&%v", datacenterID, nb.filter)
+	var ids []string
+	var args string
+	if nb.filter != nil {
+		args = *nb.filter
+	}
+	filter := fmt.Sprintf("group_id=%s&%s", datacenterID, args)
 	nbClusters, err := nb.client.GetClusters(&filter)
 	if err != nil {
 		return clusters, err
@@ -58,16 +83,96 @@ func (nb *Netbox) GetDcClusters(datacenterID string) ([]sync.Cluster, error) {
 			Name:        nbCluster.Name,
 			Description: nbCluster.Description,
 		}
+		ids = append(ids, cluster.ID)
 		clusters = append(clusters, cluster)
 	}
+	for _, cobj := range nb.derivedClusters {
+		if cobj.GroupID == datacenterID {
+			if !objInArray(cobj, ids) {
+				clusters = append(clusters, cobj.Cluster)
+			}
+		}
+	}
 	return clusters, nil
+}
+
+// deriveGroupsAndClusters finds all filtered VMs and determines their clusters and groups
+func (nb *Netbox) deriveGroupsAndClusters() error {
+	result := &VMSearchResponse{}
+	var args string
+
+	groups := make(map[int]netbox.DisplayIDName)
+
+	clusterIDX := make(map[int64]EmbeddedCluster)
+	if nb.filter != nil {
+		args = *nb.filter
+	}
+	err := nb.client.Search("virtualmachine", result, args)
+	if err != nil {
+		nb.log.Error("could not find virtual machines", "error", err)
+		return err
+	}
+	for _, vm := range result.Results {
+		clusterIDX[vm.Cluster.ID] = vm.Cluster
+	}
+	for result.Next != nil {
+		_, err := nb.client.GetByURL(*result.Next, result)
+		if err != nil {
+			nb.log.Error("error getting more vms", "error", err)
+			return err
+		}
+		for _, vm := range result.Results {
+			clusterIDX[vm.Cluster.ID] = vm.Cluster
+		}
+	}
+	nb.derivedClusters = make([]DerivedCluster, 0)
+	for _, clstr := range clusterIDX {
+		cluster := &netbox.Cluster{}
+		_, err = nb.client.GetByURL(clstr.URL, cluster)
+		groups[cluster.Group.ID] = cluster.Group
+		nb.derivedClusters = append(nb.derivedClusters,
+			DerivedCluster{
+				Cluster: sync.Cluster{
+					ID:          fmt.Sprint(cluster.ID),
+					Name:        cluster.Name,
+					Description: cluster.Description,
+				},
+				GroupID: fmt.Sprint(cluster.Group.ID),
+			},
+		)
+	}
+	nb.derivedDataCenters = make([]sync.Datacenter, 0)
+	for _, grp := range groups {
+		nb.derivedDataCenters = append(nb.derivedDataCenters,
+			sync.Datacenter{
+				ID:          fmt.Sprint(grp.ID),
+				Name:        grp.Name,
+				Description: grp.Display,
+			},
+		)
+	}
+	return nil
 }
 
 // GetClusterVMs returns a list of VMs for the given cluster ID
 func (nb *Netbox) GetClusterVMs(clusterID string) ([]sync.VM, error) {
 	var vms []sync.VM
+	var searchArgs string
+	if nb.filter != nil {
+		searchArgs = *nb.filter
+	}
 
-	nbvms, err := nb.client.SearchVMs(fmt.Sprintf("cluster_id=%s", clusterID))
+	clusterResp := &netbox.ClusterResponse{}
+	err := nb.client.Search("cluster", clusterResp, fmt.Sprintf("id=%s", clusterID), searchArgs)
+	if err != nil {
+		nb.log.Error("error searching for cluster", "error", err)
+		return nil, err
+	}
+	if clusterResp.Count != 0 {
+		searchArgs = ""
+	}
+
+	nbvms, err := nb.client.SearchVMs(fmt.Sprintf("cluster_id=%s", clusterID), searchArgs)
 	if err != nil {
 		nb.log.Error("error getting VMs", "cluster", clusterID, "error", err)
 		return vms, err
