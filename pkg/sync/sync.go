@@ -163,8 +163,10 @@ func getInterfaceIPs(nbvm NBVM, intID int) []NetboxIP {
 
 func (s *Sync) updateVMInterface(nbint netbox.Interface, nic NIC) error {
 	data := make(map[string]interface{})
-	if !strings.EqualFold(*nbint.MacAddress, nic.MAC) {
-		data["mac_address"] = nic.MAC
+	if nbint.MacAddress != nil && nic.MAC != "" {
+		if !strings.EqualFold(*nbint.MacAddress, nic.MAC) {
+			data["mac_address"] = nic.MAC
+		}
 	}
 	if len(data) > 0 {
 		return s.netbox.UpdateObjectByURL(nbint.URL, data)
@@ -218,9 +220,11 @@ func (s *Sync) AddVMtoCluster(clusterID int, vm VM) error {
 func (s *Sync) addInterface(vmid int, nic NIC) {
 	intf := netbox.InterfaceEdit{
 		Name:        &nic.Name,
-		MacAddress:  &nic.MAC,
 		VM:          &vmid,
 		Description: nic.Description,
+	}
+	if nic.MAC != "" {
+		intf.MacAddress = &nic.MAC
 	}
 	newIntf, err := s.netbox.AddInterface("virtualmachine", int64(vmid), intf)
 	if err != nil {
