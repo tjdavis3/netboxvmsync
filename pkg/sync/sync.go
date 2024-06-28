@@ -327,7 +327,7 @@ func (s *Sync) buildIDandProviderFields(vmid string) map[string]any {
 // device will be deleted
 func (s *Sync) Prune(cluster netbox.Cluster, pvms []VM) error {
 	s.log.Info("Pruning removed VMs", "cluster", cluster.Name)
-	vms, err := s.netbox.SearchVMs(fmt.Sprintf("vmprovider=%s", url.QueryEscape(s.vmProvider.GetName())), fmt.Sprintf("cluster_id=%d", cluster.ID))
+	vms, err := s.netbox.SearchVMs(fmt.Sprintf("cf_vmprovider=%s", url.QueryEscape(s.vmProvider.GetName())), fmt.Sprintf("cluster_id=%d", cluster.ID))
 	if err != nil {
 		s.log.Error("error retrieving netbox VMs for cluster", "cluster", cluster.Name, "error", err)
 		return err
@@ -347,11 +347,11 @@ func (s *Sync) Prune(cluster netbox.Cluster, pvms []VM) error {
 func (s *Sync) validateNBvm(vm netbox.DeviceOrVM, pvms []VM) error {
 	var err error
 	found := false
+	vmid, ok := vm.CustomFieldsMap["vmid"]
+	if !ok {
+		return nil
+	}
 	for _, pvm := range pvms {
-		vmid, ok := vm.CustomFieldsMap["vmid"]
-		if !ok {
-			continue
-		}
 		if fmt.Sprint(vmid) == pvm.ID {
 			found = true
 			break
