@@ -29,9 +29,10 @@ func (s *Sync) GetVMbyName(clusterID int, name string) (NBVM, error) {
 	return *vm, err
 }
 
-func (s *Sync) GetVM(id string) (NBVM, error) {
+func (s *Sync) GetVM(clusterID int, id string) (NBVM, error) {
 	vm := &NBVM{}
 	args := []string{
+		fmt.Sprintf("cluster_id=%d", clusterID),
 		fmt.Sprintf("cf_vmid=%s", id),
 		fmt.Sprintf("cf_vmprovider=%s", s.vmProvider.GetName()),
 	}

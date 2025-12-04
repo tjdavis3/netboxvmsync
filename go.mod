@@ -1,10 +1,11 @@
 module github.com/ringsq/netboxvmsync
 
-go 1.21.6
+go 1.24.3
 
 require (
 	github.com/ringsq/vcenterapi v0.0.0-20240320174002-fd0df8347ac2
-	github.com/rsapc/netbox v0.0.0-20240701130058-d0c11dbadba2
+	github.com/rsapc/netbox v0.0.0-20251204174506-0f0e2f7475b2
+	github.com/srerun/go-proxmox-pdm v0.0.0-00010101000000-000000000000
 )
 
 require (
@@ -25,3 +26,5 @@ require (
 	golang.org/x/exp v0.0.0-20240222234643-814bf88cf225 // indirect
 	golang.org/x/net v0.21.0 // indirect
 )
+
+replace github.com/srerun/go-proxmox-pdm => ../../srerun/go-proxmox-pdm

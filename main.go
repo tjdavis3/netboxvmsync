@@ -9,6 +9,7 @@ import (
 	"github.com/joho/godotenv"
 	nbProvider "github.com/ringsq/netboxvmsync/pkg/providers/netbox"
 	"github.com/ringsq/netboxvmsync/pkg/providers/proxmox"
+	"github.com/ringsq/netboxvmsync/pkg/providers/proxmoxdc"
 	"github.com/ringsq/netboxvmsync/pkg/providers/vmware"
 	"github.com/ringsq/netboxvmsync/pkg/sync"
 	"github.com/rsapc/netbox"
@@ -41,6 +42,8 @@ func main() {
 	var err error
 
 	switch strings.ToLower(cfg.Provider) {
+	case "proxmoxdc":
+		provider, err = proxmoxdc.NewProxmoxDCProvider(cfg.ProviderURL, cfg.ProviderUser, cfg.ProviderToken, slog.Default())
 	case "proxmox":
 		provider, err = proxmox.NewProxmoxProvider(cfg.ProviderURL, cfg.ProviderUser, cfg.ProviderToken, slog.Default())
 	case "netbox":

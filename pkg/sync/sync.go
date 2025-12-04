@@ -72,7 +72,7 @@ func (s *Sync) StartSync() {
 
 func (s *Sync) processVM(nbCluster netbox.Cluster, vm VM) {
 	found := false
-	nbVM, err := s.GetVM(vm.ID)
+	nbVM, err := s.GetVM(nbCluster.ID, vm.ID)
 	if err != nil {
 		if errors.Is(err, netbox.ErrNotFound) {
 			nbVM, err = s.GetVMbyName(nbCluster.ID, vm.Name)
