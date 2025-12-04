@@ -86,6 +86,10 @@ github.com/rsapc/netbox v0.0.0-20240628142922-82a5046987c3 h1:E87XFiGk5cJQN+ptYO
 github.com/rsapc/netbox v0.0.0-20240628142922-82a5046987c3/go.mod h1:CdtnwIjXwF83qyFB516OKL4EAalFOaiWdbEvbVA4gsM=
 github.com/rsapc/netbox v0.0.0-20240628202128-a56c0325f5ee h1:xwYX2uXA2y3ExQmB4a8o/UovFLGx/gr9FH7dSiNHh90=
 github.com/rsapc/netbox v0.0.0-20240628202128-a56c0325f5ee/go.mod h1:CdtnwIjXwF83qyFB516OKL4EAalFOaiWdbEvbVA4gsM=
+github.com/rsapc/netbox v0.0.0-20240701122951-8818dbd74be6 h1:J9C7a247UcA7yrUiqaLtccfWw3lhhzwImEJMpZXrtdM=
+github.com/rsapc/netbox v0.0.0-20240701122951-8818dbd74be6/go.mod h1:CdtnwIjXwF83qyFB516OKL4EAalFOaiWdbEvbVA4gsM=
+github.com/rsapc/netbox v0.0.0-20240701130058-d0c11dbadba2 h1:fYPm13akXDASGsdNvDono6QGnWy2d4VC41zMPpV5XxA=
+github.com/rsapc/netbox v0.0.0-20240701130058-d0c11dbadba2/go.mod h1:CdtnwIjXwF83qyFB516OKL4EAalFOaiWdbEvbVA4gsM=
 github.com/sirupsen/logrus v1.7.0/go.mod h1:yWOB1SBYBC5VeMP7gHvWumXLIWorT60ONWic61uBYv0=
 github.com/stretchr/testify v1.2.2/go.mod h1:a8OnRcib4nhh0OaRAV+Yts87kKdq0PP7pXfy6kDkUVs=
 github.com/stripe/safesql v0.2.0/go.mod h1:q7b2n0JmzM1mVGfcYpanfVb2j23cXZeWFxcILPn3JV4=
