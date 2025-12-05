@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"log/slog"
 	"net/http"
+	"strconv"
 	"strings"
 
 	"github.com/ringsq/netboxvmsync/pkg"
@@ -108,8 +109,61 @@ func (p *PDMProvider) GetClusterVMs(clusterID string) ([]sync.VM, error) {
 
 			vm.Network = make([]sync.NIC, 0)
 
+			vmid, err := strconv.Atoi(vm.ID)
+			if err == nil {
+				cfg, err := p.client.GetVMConfig(context.Background(), clusterID, vmid)
+				if err == nil {
+					for key, value := range cfg {
+						if key == "description" {
+							vm.Description = fmt.Sprint(value)
+						}
+						if strings.HasPrefix(key, "net") {
+							nicData := splitFieldValue(fmt.Sprint(value))
+							nic := sync.NIC{}
+							nic.MAC = nicData["mac"]
+							nic.Description = nicData["description"]
+							nic.ID = key
+							nic.Name = key
+							netdev := strings.Split(key, "net")
+							if len(netdev) == 2 {
+								nicID := netdev[1]
+								ipconfig := fmt.Sprintf("ipconfig%s", nicID)
+								if ipdata, ok := cfg[ipconfig]; ok {
+									ipfields := splitFieldValue(fmt.Sprint(ipdata))
+									if ip, ok := ipfields["ip"]; ok {
+										nic.IP = []string{ip}
+									}
+								}
+							}
+							vm.Network = append(vm.Network, nic)
+						}
+					}
+				}
+			}
+
 			vms = append(vms, vm)
 		}
 	}
 	return vms, nil
+}
+
+// splitFieldValues takes the field of the form key=value,key=value
+// and returns it as a map of [key]value
+func splitFieldValue(field string) map[string]string {
+	data := make(map[string]string)
+	fields := strings.Split(field, ",")
+	idx := 0
+	for _, f := range fields {
+		values := strings.Split(f, "=")
+		data[values[0]] = values[1]
+		if len(values) == 2 {
+			if idx == 0 {
+				data["description"] = field
+				data["mac"] = values[1]
+				data["driver"] = values[0]
+			}
+		}
+		idx++
+	}
+	return data
 }

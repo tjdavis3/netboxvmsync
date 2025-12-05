@@ -214,10 +214,7 @@ func (nb *Netbox) loadVMinterfacesAndIP(vm *sync.VM) error {
 		vm.Network = make([]sync.NIC, 0)
 	}
 	for _, intf := range intfs {
-		var mac string
-		if intf.MacAddress != nil {
-			mac = *intf.MacAddress
-		}
+		mac := intf.GetMacAddress()
 		net := sync.NIC{
 			ID:          fmt.Sprint(intf.ID),
 			Name:        intf.Name,

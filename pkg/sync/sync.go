@@ -163,9 +163,20 @@ func getInterfaceIPs(nbvm NBVM, intID int) []NetboxIP {
 
 func (s *Sync) updateVMInterface(nbint netbox.Interface, nic NIC) error {
 	data := make(map[string]interface{})
-	if nbint.MacAddress != nil && nic.MAC != "" {
-		if !strings.EqualFold(*nbint.MacAddress, nic.MAC) {
-			data["mac_address"] = nic.MAC
+	nbmac := nbint.GetMacAddress()
+	if nbmac != "" && nic.MAC != "" {
+		macid := s.createMAC(nic.MAC)
+		if macid > 0 {
+			data["primary_mac_address"] = macid
+		}
+	} else {
+		if nbmac != "" && nic.MAC != "" {
+			if !strings.EqualFold(nbmac, nic.MAC) {
+				macid := s.createMAC(nic.MAC)
+				if macid > 0 {
+					data["primary_mac_address"] = macid
+				}
+			}
 		}
 	}
 	if len(data) > 0 {
@@ -224,7 +235,7 @@ func (s *Sync) addInterface(vmid int, nic NIC) {
 		Description: nic.Description,
 	}
 	if nic.MAC != "" {
-		intf.MacAddress = &nic.MAC
+		intf.SetMac(s.createMAC(nic.MAC))
 	}
 	newIntf, err := s.netbox.AddInterface("virtualmachine", int64(vmid), intf)
 	if err != nil {

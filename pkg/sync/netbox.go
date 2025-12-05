@@ -103,3 +103,26 @@ func (s *Sync) updateIPs(ips []NetboxIP, results *netbox.IPSearchResults) []Netb
 	}
 	return ips
 }
+
+func (s *Sync) createMAC(mac string) (id float64) {
+	nb := s.netbox
+	result := make(map[string]any)
+	err := nb.Search("mac", &result, fmt.Sprintf("mac_address=%s", mac))
+	if err != nil {
+		s.log.Error("could not search for mac address", "mac", mac, "error", err)
+		return id
+	}
+	if result["count"].(float64) == 0 {
+		data := map[string]any{
+			"mac_address": mac,
+		}
+		newmac, err := nb.AddObject("mac", data)
+		if err != nil {
+			s.log.Error("could not create mac address", "mac", mac, "error", err)
+			return id
+		}
+		id = newmac["id"].(float64)
+		s.log.Info("created new mac address", "mac", mac, "id", id)
+	}
+	return id
+}

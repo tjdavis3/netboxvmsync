@@ -4,7 +4,7 @@ go 1.24.3
 
 require (
 	github.com/ringsq/vcenterapi v0.0.0-20240320174002-fd0df8347ac2
-	github.com/rsapc/netbox v0.0.0-20251204174506-0f0e2f7475b2
+	github.com/rsapc/netbox v0.0.0-20251205151015-16d375370672
 	github.com/srerun/go-proxmox-pdm v0.0.0-00010101000000-000000000000
 )
 
